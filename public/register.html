@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>التسجيل في المسابقة | قارئ المدرسة</title>
+  <meta name="theme-color" content="#052e23">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/common.js" defer></script>
+  <script src="/js/uploader.js" defer></script>
+  <script src="/js/register.js" defer></script>
+</head>
+<body data-page="register">
+<main>
+  <section class="page-hero">
+    <div class="pattern-layer"></div>
+    <div class="container">
+      <h1>التسجيل في المسابقة</h1>
+      <p>سجّل بياناتك، ثم ارفع مقطع تلاوتك. يمكنك حفظ التسجيل ومتابعة الرفع لاحقًا.</p>
+    </div>
+  </section>
+
+  <div class="narrow" style="padding-bottom:80px">
+    <div class="panel">
+      <ol class="steps" id="steps">
+        <li data-n="1" class="on">بيانات الطالب</li>
+        <li data-n="2">رقم المشاركة</li>
+        <li data-n="3">رفع التلاوة</li>
+        <li data-n="4">التأكيد</li>
+      </ol>
+
+      <div id="closed" class="hidden"></div>
+
+      <!-- الخطوة 1 -->
+      <form id="step1" novalidate>
+        <div class="form-grid">
+          <div class="field full">
+            <label for="full_name">الاسم الكامل للطالب <span class="req">*</span></label>
+            <input id="full_name" name="full_name" class="input" autocomplete="name" maxlength="90" required placeholder="الاسم الثلاثي أو الرباعي">
+            <div class="hint">لن يُنشر الاسم الكامل؛ تعتمد اللجنة اسمًا مختصرًا للنشر.</div>
+            <div class="err" data-err="full_name"></div>
+          </div>
+          <div class="field">
+            <label for="school_id">الرقم المدرسي <span class="req">*</span></label>
+            <input id="school_id" name="school_id" class="input" inputmode="numeric" dir="ltr" maxlength="20" required style="text-align:right">
+            <div class="hint">يُستخدم للتحقق فقط ولا يظهر للعامة.</div>
+            <div class="err" data-err="school_id"></div>
+          </div>
+          <div class="field">
+            <label for="title">عنوان التلاوة أو اسم السورة <span class="req">*</span></label>
+            <input id="title" name="title" class="input" maxlength="100" required placeholder="مثال: سورة الرحمن (1–25)">
+            <div class="err" data-err="title"></div>
+          </div>
+          <div class="field">
+            <label for="grade">الصف الدراسي <span class="req">*</span></label>
+            <select id="grade" name="grade" class="input" required><option value="">اختر الصف</option></select>
+            <div class="err" data-err="grade"></div>
+          </div>
+          <div class="field">
+            <label for="section">الشعبة <span class="req">*</span></label>
+            <select id="section" name="section" class="input" required><option value="">اختر الشعبة</option></select>
+            <div class="err" data-err="section"></div>
+          </div>
+          <div class="field full">
+            <label class="check"><input type="checkbox" id="terms" name="terms"><span>قرأت <a href="/#terms" target="_blank" rel="noopener">شروط المسابقة وأحكامها</a> وأوافق عليها، وأقرّ بأن التلاوة بصوتي دون أي معالجة أو موسيقى.</span></label>
+            <div class="err" data-err="terms"></div>
+          </div>
+          <div class="field full" id="guardian-field">
+            <label class="check"><input type="checkbox" id="guardian" name="guardian"><span><span id="consent-text">أقرّ بموافقة ولي الأمر على مشاركتي ونشر مقطع التلاوة على منصة المسابقة بعد اعتماده من اللجنة.</span> <a href="/privacy" target="_blank" rel="noopener">سياسة الخصوصية</a></span></label>
+            <div class="err" data-err="guardian"></div>
+          </div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true">
+        </div>
+        <div id="form-msg" class="mt-2"></div>
+        <div class="spread mt-3">
+          <a href="/track" class="muted">سجّلت مسبقًا؟ تابع تسجيلك</a>
+          <button class="btn" type="submit" id="submit1">حفظ التسجيل والمتابعة</button>
+        </div>
+      </form>
+
+      <!-- الخطوة 2 -->
+      <div id="step2" class="hidden">
+        <div class="ticket" id="ticket">
+          <div class="pattern-layer"></div>
+          <div class="lbl">تم حفظ تسجيلك بنجاح</div>
+          <div class="row">
+            <div><div class="lbl">رقم المشاركة</div><div class="big num" data-entry></div></div>
+            <div><div class="lbl">رمز المتابعة (سرّي)</div><div class="mt-1"><span class="token" data-token></span></div></div>
+          </div>
+          <p style="margin:0;color:rgba(251,246,234,.8);font-size:.95rem">احتفظ بهذين الرقمين؛ ستحتاجهما لمتابعة رفع الفيديو أو معرفة حالة مشاركتك من أي جهاز.</p>
+        </div>
+        <div class="gap-row mt-2 no-print">
+          <button class="btn btn-outline btn-sm" id="copy">نسخ البيانات</button>
+          <button class="btn btn-outline btn-sm" id="download">تنزيل كملف</button>
+          <button class="btn btn-outline btn-sm" id="print">طباعة</button>
+        </div>
+        <div class="spread mt-3 no-print">
+          <a href="/" class="muted">سأرفع الفيديو لاحقًا</a>
+          <button class="btn" id="to-upload">متابعة إلى رفع التلاوة</button>
+        </div>
+      </div>
+
+      <!-- الخطوة 3 -->
+      <div id="step3" class="hidden">
+        <h2 style="font-family:var(--f-display);color:var(--em-900);margin:0 0 6px;font-weight:500">رفع مقطع التلاوة</h2>
+        <p class="muted" style="margin-top:0">نصائح: سجّل في مكان هادئ، واجعل الهاتف ثابتًا وقريبًا منك، وتجنّب أي موسيقى أو مؤثرات صوتية. يُفضّل ألا يظهر الوجه.</p>
+        <div id="uploader"></div>
+      </div>
+
+      <!-- الخطوة 4 -->
+      <div id="step4" class="hidden center">
+        <img src="/img/avatar.svg" alt="" width="120" height="120" style="margin:0 auto 14px">
+        <h2 style="font-family:var(--f-display);color:var(--em-900);margin:0;font-weight:700">بارك الله فيك وفي صوتك</h2>
+        <p class="muted">تم استلام تلاوتك، وهي الآن <span class="status-badge st-pending">بانتظار المراجعة</span><br>ستظهر في صفحة المتسابقين بعد اعتمادها من لجنة المسابقة.</p>
+        <p>رقم مشاركتك: <b class="num" data-entry></b></p>
+        <div class="gap-row" style="justify-content:center"><a class="btn" href="/track">متابعة حالة المشاركة</a><a class="btn btn-outline" href="/contestants">أصوات تتلو القرآن</a></div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

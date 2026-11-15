@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>متابعة التسجيل | قارئ المدرسة</title>
+  <meta name="theme-color" content="#052e23">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/common.js" defer></script>
+  <script src="/js/uploader.js" defer></script>
+  <script src="/js/certificate.js" defer></script>
+  <script src="/js/track.js" defer></script>
+</head>
+<body data-page="track">
+<main>
+  <section class="page-hero">
+    <div class="pattern-layer"></div>
+    <div class="container">
+      <h1>متابعة التسجيل</h1>
+      <p>أدخل رقم المشاركة ورمز المتابعة لمعرفة حالة تلاوتك، أو لإكمال رفع الفيديو أو استبداله.</p>
+    </div>
+  </section>
+  <div class="narrow" style="padding-bottom:80px">
+    <div class="panel">
+      <form id="login" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="entry_no">رقم المشاركة</label>
+            <input id="entry_no" class="input" inputmode="numeric" dir="ltr" style="text-align:right" maxlength="8" required>
+          </div>
+          <div class="field">
+            <label for="token">رمز المتابعة</label>
+            <input id="token" class="input" dir="ltr" autocomplete="off" placeholder="XXXX-XXXX-XXXX" maxlength="16" required style="text-align:right;letter-spacing:.08em">
+          </div>
+        </div>
+        <div id="login-msg" class="mt-2"></div>
+        <div class="spread mt-2">
+          <span class="muted" style="font-size:.9rem">فقدت رمز المتابعة؟ تواصل مع لجنة المسابقة لإعادة إصداره.</span>
+          <button class="btn" type="submit" id="login-btn">عرض الحالة</button>
+        </div>
+      </form>
+
+      <div id="view" class="hidden">
+        <div class="spread">
+          <div>
+            <div class="muted">رقم المشاركة <b class="num" data-f="entry_no"></b></div>
+            <h2 style="font-family:var(--f-display);color:var(--em-900);margin:4px 0;font-weight:500" data-f="display_name"></h2>
+            <div style="font-family:var(--f-quran);font-size:1.25rem;color:var(--gold-lo)" data-f="title"></div>
+          </div>
+          <div id="badge"></div>
+        </div>
+        <div id="status-msg" class="mt-2"></div>
+        <div id="my-video" class="preview hidden"><video controls preload="metadata"></video></div>
+        <div id="certificate" class="mt-3 hidden"></div>
+        <div id="upload-wrap" class="mt-3 hidden">
+          <h3 style="font-family:var(--f-display);color:var(--em-900);margin:0 0 10px;font-weight:500" id="upload-title">رفع مقطع التلاوة</h3>
+          <div id="uploader"></div>
+        </div>
+        <div class="spread mt-3">
+          <button class="btn btn-outline btn-sm" id="logout">الخروج من هذه المشاركة</button>
+          <a class="btn btn-sm btn-emerald" href="/contestants">أصوات تتلو القرآن</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

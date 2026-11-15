@@ -1,0 +1,17 @@
+{
+  "name": "qari-almadrasa",
+  "version": "3.0.0",
+  "description": "منصة «قارئ المدرسة» لإدارة مسابقة التلاوة القرآنية بين طلاب المدرسة",
+  "main": "server.js",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "create-admin": "node --disable-warning=ExperimentalWarning server.js create-admin",
+    "test": "node --disable-warning=ExperimentalWarning test/smoke.js",
+    "demo": "node --disable-warning=ExperimentalWarning scripts/demo.js"
+  },
+  "license": "UNLICENSED"
+}

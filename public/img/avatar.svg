@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="رمز القارئ">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0F6248"/><stop offset="1" stop-color="#04261C"/>
+    </linearGradient>
+    <linearGradient id="gd" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F1DC9C"/><stop offset=".5" stop-color="#C9A44C"/><stop offset="1" stop-color="#9C7A2B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="url(#bg)"/>
+  <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gd)" stroke-width="2"/>
+  <circle cx="100" cy="100" r="84" fill="none" stroke="#C9A44C" stroke-width=".8" stroke-dasharray="2 4" opacity=".7"/>
+  <!-- محراب -->
+  <path d="M58 150 V92 C58 66 78 50 100 40 C122 50 142 66 142 92 V150" fill="none" stroke="url(#gd)" stroke-width="3"/>
+  <path d="M68 150 V95 C68 75 84 62 100 54 C116 62 132 75 132 95 V150" fill="#0A4D38" stroke="#C9A44C" stroke-width="1" opacity=".95"/>
+  <!-- نجمة -->
+  <g transform="translate(100 78)" fill="url(#gd)">
+    <rect x="-7" y="-7" width="14" height="14"/>
+    <rect x="-7" y="-7" width="14" height="14" transform="rotate(45)"/>
+    <circle r="3.2" fill="#0A4D38"/>
+  </g>
+  <!-- مصحف مفتوح على حامل -->
+  <path d="M100 118 C90 110 78 108 70 110 V134 C78 132 90 134 100 141 Z" fill="#FBF6EA"/>
+  <path d="M100 118 C110 110 122 108 130 110 V134 C122 132 110 134 100 141 Z" fill="#F3EBD7"/>
+  <path d="M100 118 V141" stroke="#9C7A2B" stroke-width="1.4"/>
+  <g stroke="#C9A44C" stroke-width="1" opacity=".8">
+    <path d="M76 116 C83 115 90 117 96 120 M76 122 C83 121 90 123 96 126 M76 128 C83 127 90 129 96 132"/>
+    <path d="M124 116 C117 115 110 117 104 120 M124 122 C117 121 110 123 104 126 M124 128 C117 127 110 129 104 132"/>
+  </g>
+  <path d="M74 146 L100 136 L126 146 M80 152 L120 138 M120 152 L80 138" stroke="url(#gd)" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>

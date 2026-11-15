@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>قارئ المدرسة | مسابقة التلاوة القرآنية</title>
+  <meta name="description" content="قارئ المدرسة — مسابقة لاكتشاف أجمل الأصوات في تلاوة القرآن الكريم بين طلاب المدرسة. رتّل وارتقِ… واجعل صوتك بالقرآن يتألّق.">
+  <meta name="theme-color" content="#052e23">
+  <meta property="og:title" content="قارئ المدرسة | مسابقة التلاوة القرآنية">
+  <meta property="og:description" content="رتّل وارتقِ… واجعل صوتك بالقرآن يتألّق">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/common.js" defer></script>
+  <script src="/js/cards.js" defer></script>
+  <script src="/js/home.js" defer></script>
+</head>
+<body data-page="home">
+<main>
+  <!-- البطل -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="pattern-layer"></div>
+    <div class="arch" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <h1 id="hero-title">قارئ المدرسة</h1>
+      <p class="slogan">رتّل وارتقِ… واجعل صوتك بالقرآن يتألّق</p>
+      <p class="sub" data-bind="hero_subtitle">مسابقة لاكتشاف أجمل الأصوات في تلاوة القرآن الكريم بين طلاب المدرسة</p>
+      <div class="hero-cta">
+        <a class="btn" href="/register" id="cta-register">سجّل الآن</a>
+        <a class="btn btn-ghost" href="/contestants">استعرض المتسابقين</a>
+      </div>
+      <div id="countdown" class="countdown hidden" aria-live="off">
+        <span class="label"></span>
+        <div class="units">
+          <div class="u"><b data-u="d">00</b><span>يوم</span></div>
+          <div class="u"><b data-u="h">00</b><span>ساعة</span></div>
+          <div class="u"><b data-u="m">00</b><span>دقيقة</span></div>
+          <div class="u"><b data-u="s">00</b><span>ثانية</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- الإحصاءات -->
+  <div class="container">
+    <div class="stats" id="stats">
+      <div class="stat reveal"><div class="ico" data-icon="users"></div><b data-stat="registered">—</b><span>طالب مسجّل</span></div>
+      <div class="stat reveal"><div class="ico" data-icon="video"></div><b data-stat="published">—</b><span>تلاوة منشورة</span></div>
+      <div class="stat reveal"><div class="ico" data-icon="vote"></div><b data-stat="valid_votes">—</b><span>صوت صحيح</span></div>
+      <div class="stat reveal"><div class="ico" data-icon="heart"></div><b data-stat="voters">—</b><span>مشارك في التصويت</span></div>
+    </div>
+  </div>
+
+  <!-- عن المسابقة -->
+  <section class="section" id="about">
+    <div class="container about-grid">
+      <div class="reveal">
+        <span class="eyebrow">عن المسابقة</span>
+        <h2 class="section-title" style="font-family:var(--f-display);font-size:clamp(1.9rem,4vw,2.6rem);color:var(--em-900);margin:0 0 14px;line-height:1.3">منبرٌ للأصوات التي تُحيي القلوب</h2>
+        <div class="about-text">
+          <p class="lead" data-bind="about_text"></p>
+          <ul class="goals" id="goals"></ul>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="ayah-card">
+          <div class="pattern-layer"></div>
+          <q>وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</q>
+          <cite>سورة المزمل — الآية ٤</cite>
+          <div class="divider" aria-hidden="true"><span data-icon="star8"></span></div>
+          <q style="font-size:clamp(1.2rem,2.4vw,1.55rem)">«زَيِّنُوا الْقُرْآنَ بِأَصْوَاتِكُمْ»</q>
+          <cite>حديث شريف — رواه أبو داود والنسائي وابن ماجه</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- أبرز التلاوات -->
+  <section class="section section-alt" id="featured">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">من أصوات المسابقة</span>
+        <h2>أبرز التلاوات المشاركة</h2>
+        <p>تلاوات اعتمدتها لجنة المسابقة، استمع وشارك في اختيار أجمل الأصوات.</p>
+      </div>
+      <div class="grid-cards" id="featured-grid">
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      </div>
+      <div class="center mt-3"><a class="btn btn-emerald" href="/contestants">استعرض جميع المتسابقين</a></div>
+    </div>
+  </section>
+
+  <!-- المراحل -->
+  <section class="section section-dark" id="stages">
+    <div class="pattern-layer"></div>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">مسار المسابقة</span>
+        <h2>مراحل المسابقة</h2>
+        <p>تابع المرحلة الحالية والمواعيد القادمة.</p>
+      </div>
+      <div class="stages" id="stages-list"></div>
+    </div>
+  </section>
+
+  <!-- الشروط -->
+  <section class="section" id="terms">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">قبل المشاركة</span>
+        <h2>الشروط والأحكام</h2>
+        <p>يُرجى قراءة الشروط بعناية؛ فالتسجيل في المسابقة يعني الموافقة عليها.</p>
+      </div>
+      <ol class="terms reveal" id="terms-list"></ol>
+    </div>
+  </section>
+
+  <!-- دعوة ختامية -->
+  <section class="section section-dark">
+    <div class="pattern-layer"></div>
+    <div class="container cta-band reveal">
+      <h2>صوتك بالقرآن… أمانةٌ وموهبة</h2>
+      <p>سجّل مشاركتك وارفع تلاوتك، ودَع أجمل ما فيك يصل إلى القلوب.</p>
+      <div class="hero-cta">
+        <a class="btn" href="/register" id="cta-register-2">سجّل الآن</a>
+        <a class="btn btn-ghost" href="/contestants">أصوات تتلو القرآن</a>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
