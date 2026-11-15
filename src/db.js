@@ -248,7 +248,7 @@ const DEFAULT_SETTINGS = {
   max_video_mb: 200,
   max_video_seconds: 300,
   min_video_seconds: 15,
-  allowed_formats: ['mp4', 'mov', 'm4v', 'webm'],
+  allowed_formats: ['mp4', 'mov', 'm4v', 'webm', 'mpeg', 'mpg', 'mp3'],
   allow_replace: true,
   allow_resubmit_rejected: true,
   require_guardian_consent: true,

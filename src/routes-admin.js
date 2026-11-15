@@ -95,7 +95,7 @@ const SETTING_RULES = {
   max_video_mb: (v) => Math.min(Math.max(Math.round(Number(v) || 0), 5), 2048),
   max_video_seconds: (v) => Math.min(Math.max(Math.round(Number(v) || 0), 20), 3600),
   min_video_seconds: (v) => Math.min(Math.max(Math.round(Number(v) || 0), 0), 600),
-  allowed_formats: (v) => { const l = strList(v, 4, 5).map((x) => x.toLowerCase()).filter((x) => ['mp4', 'mov', 'm4v', 'webm'].includes(x)); if (!l.length) throw new HttpError(422, 'اختر صيغة واحدة على الأقل.'); return [...new Set(l)]; },
+  allowed_formats: (v) => { const l = strList(v, 7, 5).map((x) => x.toLowerCase()).filter((x) => ['mp4', 'mov', 'm4v', 'webm', 'mpeg', 'mpg', 'mp3'].includes(x)); if (!l.length) throw new HttpError(422, 'اختر صيغة واحدة على الأقل.'); return [...new Set(l)]; },
   allow_replace: Boolean, allow_resubmit_rejected: Boolean, require_guardian_consent: Boolean,
   show_class_publicly: Boolean, show_vote_counts: Boolean, show_views: Boolean, show_results: Boolean,
   prevent_self_vote: Boolean, allow_vote_change: Boolean, vote_restrict_to_category: Boolean, judging_enabled: Boolean,

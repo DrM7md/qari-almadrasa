@@ -87,7 +87,7 @@ function voterId(req, res) {
   return nid;
 }
 
-const EXT_FOR = { mp4: 'mp4', m4v: 'mp4', mov: 'mov', webm: 'webm' };
+const EXT_FOR = { mp4: 'mp4', m4v: 'mp4', mov: 'mov', webm: 'webm', mpeg: 'mpeg', mpg: 'mpeg', mp3: 'mp3' };
 function extAllowed(ext, s) { return (s.allowed_formats || []).map((x) => String(x).toLowerCase()).includes(ext); }
 
 function register(router) {
@@ -313,12 +313,12 @@ function register(router) {
     };
     const sniff = media.sniffVideo(file);
     if (!sniff) fail('الملف المرفوع ليس مقطع فيديو بصيغة مدعومة.');
-    const kindOk = (sniff.kind === 'mp4' && (extAllowed('mp4', s) || extAllowed('m4v', s))) || extAllowed(sniff.kind, s);
+    const kindOk = (sniff.kind === 'mp4' && (extAllowed('mp4', s) || extAllowed('m4v', s))) || (sniff.kind === 'mpeg' && (extAllowed('mpeg', s) || extAllowed('mpg', s))) || extAllowed(sniff.kind, s);
     if (!kindOk) fail('صيغة الفيديو غير مسموحة.');
     let duration = null;
     const info = await media.probe(file);
     if (info) {
-      if (info.error || !info.hasVideo) fail('تعذّرت قراءة الفيديو؛ قد يكون الملف تالفًا. جرّب ملفًا آخر.');
+      if (info.error || (!info.hasVideo && sniff.kind !== 'mp3')) fail('تعذّرت قراءة الملف؛ قد يكون تالفًا. جرّب ملفًا آخر.');
       if (!info.hasAudio) fail('المقطع لا يحتوي على صوت، والتلاوة لا تكتمل إلا بالصوت.');
       duration = info.duration;
       if (duration && duration > s.max_video_seconds + 2) fail(`مدة الفيديو تتجاوز الحد المسموح (${s.max_video_seconds} ثانية).`);
@@ -326,13 +326,15 @@ function register(router) {
     }
     const rand = sec.randomToken(6);
     const base = `${s.season}/${c.entry_no}-${rand}`;
-    let finalFile = file, finalMime = sniff.mime, finalExt = EXT_FOR[u.ext] === 'mov' ? 'mov' : sniff.kind === 'webm' ? 'webm' : 'mp4';
+    let finalFile = file, finalMime = sniff.mime, finalExt = sniff.kind === 'mp3' ? 'mp3' : EXT_FOR[u.ext] === 'mov' ? 'mov' : sniff.kind === 'webm' ? 'webm' : 'mp4';
     const clean = await media.sanitize(file, sniff.kind);
+    // MPEG لا تشغّله المتصفحات: التحويل إلى MP4 إلزامي
+    if (sniff.kind === 'mpeg' && !clean) fail('تعذّر تحويل ملف MPEG إلى صيغة قابلة للتشغيل. جرّب ملف MP4.');
     if (clean) { finalFile = clean.file; finalMime = clean.mime; finalExt = clean.ext; }
     const videoKey = `videos/${base}.${finalExt}`;
     let posterKey = null;
     const posterTmp = file + '.jpg';
-    if (await media.poster(file, posterTmp, duration ? Math.min(3, duration / 3) : 2)) {
+    if (sniff.kind !== 'mp3' && await media.poster(file, posterTmp, duration ? Math.min(3, duration / 3) : 2)) {
       posterKey = `posters/${base}.jpg`;
       await storage.putFile(posterTmp, posterKey, 'image/jpeg');
     }

@@ -15,6 +15,10 @@ function sniffVideo(file) {
   fs.readSync(fd, b, 0, 16, 0);
   fs.closeSync(fd);
   if (b.readUInt32BE(0) === 0x1a45dfa3) return { kind: 'webm', mime: 'video/webm' };
+  // MPEG-1/2 (Program Stream أو Elementary Stream)
+  if (b.readUInt32BE(0) === 0x000001ba || b.readUInt32BE(0) === 0x000001b3) return { kind: 'mpeg', mime: 'video/mpeg' };
+  // MP3: وسم ID3 أو إطار MPEG Audio Layer III مباشرة
+  if (b.toString('latin1', 0, 3) === 'ID3' || (b[0] === 0xff && (b[1] & 0xe6) === 0xe2)) return { kind: 'mp3', mime: 'audio/mpeg' };
   const box = b.toString('latin1', 4, 8);
   if (box === 'ftyp') {
     const brand = b.toString('latin1', 8, 12);
@@ -56,6 +60,8 @@ function poster(file, out, at = 3) {
 function sanitize(file, kind) {
   return new Promise((resolve) => {
     if (!hasMpeg) return resolve(null);
+    if (kind === 'mp3') return sanitizeAudio(file, resolve);
+    if (kind === 'mpeg') return transcodeMpeg(file, resolve);
     const webm = kind === 'webm';
     const out = file + (webm ? '.clean.webm' : '.clean.mp4');
     const args = ['-y', '-v', 'error', '-i', file, '-map', '0:v:0', '-map', '0:a:0?', '-c', 'copy', '-map_metadata', '-1', '-map_chapters', '-1',
@@ -66,6 +72,26 @@ function sanitize(file, kind) {
       if (err || !fs.existsSync(out) || fs.statSync(out).size < 1024) { try { fs.unlinkSync(out); } catch {} return resolve(null); }
       resolve({ file: out, mime: webm ? 'video/webm' : 'video/mp4', ext: webm ? 'webm' : 'mp4' });
     });
+  });
+}
+
+// MP3: حذف الوسوم (ID3) وصورة الغلاف دون إعادة ترميز
+function sanitizeAudio(file, resolve) {
+  const out = file + '.clean.mp3';
+  execFile(FFMPEG, ['-y', '-v', 'error', '-i', file, '-map', '0:a:0', '-c', 'copy', '-map_metadata', '-1', '-id3v2_version', '0', '-write_xing', '1', '-f', 'mp3', out], { timeout: 5 * 60000 }, (err) => {
+    if (err || !fs.existsSync(out) || fs.statSync(out).size < 1024) { try { fs.unlinkSync(out); } catch {} return resolve(null); }
+    resolve({ file: out, mime: 'audio/mpeg', ext: 'mp3' });
+  });
+}
+
+// MPEG-1/2: لا تشغّله المتصفحات، فيُعاد ترميزه إلى H.264 + AAC داخل MP4
+function transcodeMpeg(file, resolve) {
+  const out = file + '.clean.mp4';
+  execFile(FFMPEG, ['-y', '-v', 'error', '-i', file, '-map', '0:v:0', '-map', '0:a:0?', '-map_metadata', '-1',
+    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k',
+    '-movflags', '+faststart', '-f', 'mp4', out], { timeout: 20 * 60000 }, (err) => {
+    if (err || !fs.existsSync(out) || fs.statSync(out).size < 1024) { try { fs.unlinkSync(out); } catch {} return resolve(null); }
+    resolve({ file: out, mime: 'video/mp4', ext: 'mp4' });
   });
 }
 

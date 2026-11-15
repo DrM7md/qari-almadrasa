@@ -11,7 +11,7 @@
         <div class="ico">${ICONS.upload}</div>
         <b>اسحب ملف التلاوة هنا أو اضغط للاختيار</b>
         <small>الصيغ: ${limits.formats.map((f) => f.toUpperCase()).join('، ')} · الحد الأقصى ${limits.max_mb} م.ب · المدة من ${limits.min_seconds} ثانية حتى ${fmtDuration(limits.max_seconds)} دقيقة</small>
-        <input type="file" accept="${exts},video/*" hidden>
+        <input type="file" accept="${exts},video/*,audio/mpeg" hidden>
       </div>
       <div data-msg class="mt-2"></div>
       <div data-preview class="preview hidden"><video controls preload="metadata"></video><div class="file-meta" data-meta></div></div>

@@ -674,7 +674,7 @@
           <div class="field"><label>الحد الأقصى للحجم (م.ب)</label>${num('max_video_mb', 5, 2048)}</div>
           <div class="field"><label>الحد الأقصى للمدة (ثانية)</label>${num('max_video_seconds', 20, 3600)}</div>
           <div class="field"><label>الحد الأدنى للمدة (ثانية)</label>${num('min_video_seconds', 0, 600)}</div>
-          <div class="field"><label>الصيغ المسموحة</label><div class="gap-row">${['mp4', 'mov', 'm4v', 'webm'].map((f) => `<label class="gap-row small" style="gap:4px"><input type="checkbox" data-fmt="${f}" ${s.allowed_formats.includes(f) ? 'checked' : ''}> ${f.toUpperCase()}</label>`).join('')}</div></div>
+          <div class="field"><label>الصيغ المسموحة</label><div class="gap-row">${['mp4', 'mov', 'm4v', 'webm', 'mpeg', 'mpg', 'mp3'].map((f) => `<label class="gap-row small" style="gap:4px"><input type="checkbox" data-fmt="${f}" ${s.allowed_formats.includes(f) ? 'checked' : ''}> ${f.toUpperCase()}</label>`).join('')}</div></div>
           ${sw('allow_replace', 'السماح باستبدال الفيديو قبل الاعتماد')}
           ${sw('allow_resubmit_rejected', 'السماح بإعادة الرفع بعد الرفض')}
           ${sw('require_guardian_consent', 'إلزام إقرار موافقة ولي الأمر')}
