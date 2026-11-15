@@ -83,6 +83,7 @@
         ${link('/track', 'متابعة التسجيل', 'track')}
         <a href="/results" data-results-link class="hidden"${page === 'results' ? ' aria-current="page"' : ''}>النتائج</a>
         <a class="btn btn-sm" href="/register">سجّل الآن</a>
+        <a class="btn btn-sm btn-ghost" href="/admin">🔒 دخول الإدارة</a>
       </nav></div>`;
     document.body.prepend(header);
     const btn = $('.menu-btn', header), nav = $('.nav', header);
