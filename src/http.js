@@ -103,8 +103,17 @@ function serveStatic(req, res, pathname) {
   if (!entry || !config.isProd) {
     let stat; try { stat = fs.statSync(file); } catch { return false; }
     if (!stat.isFile()) return false;
-    const raw = fs.readFileSync(file);
+    let raw = fs.readFileSync(file);
     const ext = path.extname(file).toLowerCase();
+    // ربط ملفات JS/CSS بإصدارها (بصمة المحتوى) كي يصل أي تحديث فورًا رغم التخزين المؤقت
+    if (ext === '.html') {
+      raw = Buffer.from(raw.toString('utf8').replace(/((?:src|href)="\/(?:js|css)\/[^"?]+\.(?:js|css))"/g, (m, url) => {
+        try {
+          const asset = fs.readFileSync(path.join(PUBLIC_DIR, url.slice(url.indexOf('"') + 2)));
+          return `${url}?v=${crypto.createHash('sha1').update(asset).digest('hex').slice(0, 10)}"`;
+        } catch { return m; }
+      }));
+    }
     const type = MIME[ext] || 'application/octet-stream';
     const compressible = /text|json|svg|javascript|manifest/.test(type);
     entry = {
