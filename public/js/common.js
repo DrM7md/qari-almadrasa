@@ -94,7 +94,7 @@
     footer.innerHTML = `<div class="pattern-layer"></div><div class="container">
       <div class="foot-grid">
         <a class="brand" href="/"><img src="/img/logo.svg" alt="" width="46" height="46"><span><b>قارئ المدرسة</b><small>رتّل وارتقِ… واجعل صوتك بالقرآن يتألّق</small></span></a>
-        <nav aria-label="روابط التذييل"><a href="/contestants">المتسابقون</a><a href="/register">التسجيل</a><a href="/track">متابعة التسجيل</a><a href="/#terms">الشروط والأحكام</a><a href="/privacy">سياسة الخصوصية</a><a href="/verify">التحقق من شهادة</a></nav>
+        <nav aria-label="روابط التذييل"><a href="/contestants">المتسابقون</a><a href="/register">التسجيل</a><a href="/track">متابعة التسجيل</a><a href="/#terms">الشروط والأحكام</a><a href="/privacy">سياسة الخصوصية</a><a href="/verify">التحقق من شهادة</a><a href="/admin">🔒 دخول الإدارة</a></nav>
       </div>
       <div class="copy"><span data-footer-note>لجنة مسابقة «قارئ المدرسة»</span> · جميع الحقوق محفوظة © <span class="num">${new Date().getFullYear()}</span></div>
     </div>`;
