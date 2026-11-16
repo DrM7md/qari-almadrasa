@@ -186,7 +186,7 @@ function register(router) {
     if (full.split(' ').length < 3 || full.length < 8) errors.full_name = 'اكتب الاسم الثلاثي على الأقل.';
     else if (!NAME_RE.test(full)) errors.full_name = 'الاسم يجب أن يحتوي على حروف فقط.';
     const sid = toAsciiDigits(clean(b.school_id, 30)).replace(/\s/g, '').toUpperCase();
-    if (!/^[A-Z0-9\-]{3,20}$/.test(sid)) errors.school_id = 'الرقم المدرسي غير صالح (3–20 خانة من الأرقام أو الحروف اللاتينية).';
+    if (!/^[A-Z0-9\-]{3,20}$/.test(sid)) errors.school_id = 'الرقم الشخصي غير صالح (3–20 خانة من الأرقام أو الحروف اللاتينية).';
     const grade = clean(b.grade, 60);
     if (!s.grades.includes(grade)) errors.grade = 'اختر الصف الدراسي.';
     const section = clean(b.section, 20);
@@ -200,7 +200,7 @@ function register(router) {
     const token = newEntryToken();
     const created = tx(() => {
       const dup = db.prepare('SELECT id FROM contestants WHERE season = ? AND school_id = ?').get(s.season, sid);
-      if (dup) throw new HttpError(409, 'هذا الرقم المدرسي مسجّل مسبقًا في المسابقة. إن كنت صاحب التسجيل فاستخدم «متابعة التسجيل»، أو تواصل مع لجنة المسابقة.', { errors: { school_id: 'الرقم المدرسي مسجّل مسبقًا.' } });
+      if (dup) throw new HttpError(409, 'هذا الرقم الشخصي مسجّل مسبقًا في المسابقة. إن كنت صاحب التسجيل فاستخدم «متابعة التسجيل»، أو تواصل مع لجنة المسابقة.', { errors: { school_id: 'الرقم الشخصي مسجّل مسبقًا.' } });
       const next = (db.prepare('SELECT MAX(entry_no) m FROM contestants WHERE season = ?').get(s.season).m || 100) + 1;
       const ts = now();
       db.prepare(`INSERT INTO contestants(season, entry_no, full_name, display_name, school_id, grade, section, title, terms_accepted, guardian_consent, consent_at, token_hash, status, created_at, updated_at)

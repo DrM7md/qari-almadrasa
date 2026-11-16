@@ -1,7 +1,7 @@
 'use strict';
 /**
  * التصويت الموثّق: لا يصوّت إلا طالب مدرج في القائمة المعتمدة وبعد التحقق من هويته.
- * - التحقق: الرقم المدرسي + رمز شخصي سري تصدره المدرسة، أو حساب المدرسة (OIDC).
+ * - التحقق: الرقم الشخصي + رمز شخصي سري تصدره المدرسة، أو حساب المدرسة (OIDC).
  * - صوت صحيح واحد لكل طالب مفروض بقيد فريد في قاعدة البيانات، مهما تغيّر الجهاز أو المتصفح.
  * - كل التحققات والاحتساب في الخادم داخل معاملة قاعدة بيانات واحدة.
  */
@@ -84,7 +84,7 @@ function register(router) {
     });
   });
 
-  // ———— الدخول بالرقم المدرسي + الرمز الشخصي ————
+  // ———— الدخول بالرقم الشخصي + الرمز الشخصي ————
   router.post('/api/vote/login', async (req, res) => {
     limit(req, 'vlogin', 25, 15 * 60000, 'rate_limited');
     const b = await readJson(req, 2048);
@@ -92,8 +92,8 @@ function register(router) {
     if (b.website) { logAttempt(req, 'bot'); throw new HttpError(400, 'طلب غير صالح.'); }
     if (s.voter_auth !== 'pin') throw new HttpError(400, 'طريقة الدخول هذه غير مفعّلة.');
     const sid = normId(b.school_id);
-    const generic = 'الرقم المدرسي أو الرمز الشخصي غير صحيح.';
-    if (!sid || !normPin(b.pin)) throw new HttpError(422, 'أدخل الرقم المدرسي والرمز الشخصي.');
+    const generic = 'الرقم الشخصي أو الرمز الشخصي غير صحيح.';
+    if (!sid || !normPin(b.pin)) throw new HttpError(422, 'أدخل الرقم الشخصي والرمز الشخصي.');
     const st = db.prepare('SELECT * FROM students WHERE season = ? AND school_id = ?').get(s.season, sid);
     if (!st || !st.active) { logAttempt(req, 'unknown_student', { entered_id: sid }); throw new HttpError(401, generic); }
     if (st.locked_until && st.locked_until > now()) { logAttempt(req, 'locked', { student_id: st.id }); throw new HttpError(423, `تم إيقاف الدخول مؤقتًا بسبب محاولات خاطئة متكررة. حاول بعد ${LOCK_MIN} دقيقة أو راجع لجنة المسابقة.`); }

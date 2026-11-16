@@ -52,7 +52,7 @@ function validVotesMap(season) {
   return m;
 }
 
-// ما يراه الجمهور فقط — لا رقم مدرسي، لا اسم كامل، لا أي بيانات تواصل
+// ما يراه الجمهور فقط — لا رقم شخصي، لا اسم كامل، لا أي بيانات تواصل
 function publicContestant(c, s, votes) {
   const media = mediaUrls(c);
   return {

@@ -152,11 +152,11 @@
     main().innerHTML = head('إدارة المتسابقين', can('admin') ? '<a class="btn btn-sm" href="/api/admin/export/contestants.xlsx">تصدير Excel</a><a class="btn btn-sm btn-outline" href="/api/admin/export/contestants.csv">تصدير CSV</a>' : '') + `
       <div class="filters">
         <div class="chips">${chip('pending', 'بانتظار المراجعة')}${chip('approved', 'معتمدة')}${chip('rejected', 'مرفوضة')}${chip('disqualified', 'مستبعدة')}${chip('draft', 'مسودات')}${chip('archived', 'مؤرشفة')}${chip('', 'الكل')}</div>
-        <input class="input" id="eq" type="search" placeholder="بحث بالاسم أو الرقم المدرسي أو رقم المشاركة" value="${esc(entriesFilter.q)}" style="flex:1">
+        <input class="input" id="eq" type="search" placeholder="بحث بالاسم أو الرقم الشخصي أو رقم المشاركة" value="${esc(entriesFilter.q)}" style="flex:1">
         <select class="input" id="eg"><option value="">كل الصفوف</option>${s.grades.map((g) => `<option ${g === entriesFilter.grade ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select>
       </div>
       <div class="table-wrap"><table class="t">
-        <thead><tr><th>رقم</th><th>الاسم الكامل</th><th>الاسم المعتمد</th><th>الرقم المدرسي</th><th>الصف/الشعبة</th><th>الفئة</th><th>التلاوة</th><th>المدة</th><th>الحالة</th><th>أصوات</th><th>التسجيل</th></tr></thead>
+        <thead><tr><th>رقم</th><th>الاسم الكامل</th><th>الاسم المعتمد</th><th>الرقم الشخصي</th><th>الصف/الشعبة</th><th>الفئة</th><th>التلاوة</th><th>المدة</th><th>الحالة</th><th>أصوات</th><th>التسجيل</th></tr></thead>
         <tbody>${all.items.map((c) => `<tr class="click" data-id="${c.id}">
           <td class="num"><b>${c.entry_no}</b>${c.featured ? ' ★' : ''}</td><td>${esc(c.full_name)}</td><td>${esc(c.display_name)}</td><td class="num">${esc(c.school_id)}</td>
           <td>${esc(c.grade)} / ${esc(c.section)}</td><td class="small">${esc(c.category)}</td><td>${esc(c.title)}</td><td class="num">${c.video_duration ? fmtDuration(c.video_duration) : '—'}</td>
@@ -178,7 +178,7 @@
         ${c.status === 'disqualified' ? alertBox('err', 'سبب الاستبعاد: ' + esc(c.disqualify_reason || '')) : ''}
         <dl>
           <dt>الاسم الكامل</dt><dd>${esc(c.full_name)}</dd>
-          <dt>الرقم المدرسي</dt><dd class="num">${esc(c.school_id)}</dd>
+          <dt>الرقم الشخصي</dt><dd class="num">${esc(c.school_id)}</dd>
           <dt>الفئة</dt><dd>${esc(c.category)}</dd>
           <dt>موافقة ولي الأمر</dt><dd>${c.guardian_consent ? 'نعم ✓' : 'لا'}</dd>
           <dt>الفيديو</dt><dd>${c.video_size ? `${fmtBytes(c.video_size)} · ${c.video_duration ? fmtDuration(c.video_duration) : '—'} · ${fmtDate(c.video_uploaded_at, true)}` : '—'}</dd>
@@ -297,7 +297,7 @@
           <div class="field"><label>نهاية التصويت (يُغلق تلقائيًا)</label><input class="input" type="datetime-local" name="voting_end" value="${toLocalInput(s.voting_end)}"></div>
           <div style="align-self:end"><button class="btn btn-sm btn-emerald" type="submit">حفظ المواعيد</button></div>
         </form>
-        <p class="muted small">التحقق: ${s.voter_auth === 'oidc' ? 'حساب المدرسة (Google/Microsoft)' : 'الرقم المدرسي + رمز شخصي'} · ${s.prevent_self_vote ? 'التصويت للنفس ممنوع' : 'التصويت للنفس مسموح'} · ${s.allow_vote_change ? 'تعديل الصوت مسموح' : 'لا تعديل بعد الاعتماد'} · النتائج للجمهور: ${s.show_results ? 'معلنة' : 'مخفية'} — <a href="#settings">تعديل الإعدادات</a></p>
+        <p class="muted small">التحقق: ${s.voter_auth === 'oidc' ? 'حساب المدرسة (Google/Microsoft)' : 'الرقم الشخصي + رمز شخصي'} · ${s.prevent_self_vote ? 'التصويت للنفس ممنوع' : 'التصويت للنفس مسموح'} · ${s.allow_vote_change ? 'تعديل الصوت مسموح' : 'لا تعديل بعد الاعتماد'} · النتائج للجمهور: ${s.show_results ? 'معلنة' : 'مخفية'} — <a href="#settings">تعديل الإعدادات</a></p>
       </div>
       <div class="kpis mt-2" id="live">
         <div class="kpi"><b class="num" data-live="valid">${fmtNum(d.votes.valid)}</b><span>صوت صحيح</span></div>
@@ -372,26 +372,26 @@
     if (cell || row.length) { row.push(cell); rows.push(row); }
     return rows.filter((r) => r.some((c) => c.trim()));
   }
-  const HEADER_MAP = { school_id: ['الرقم المدرسي', 'رقم الطالب', 'school_id', 'id'], full_name: ['الاسم', 'اسم الطالب', 'الاسم الكامل', 'name', 'full_name'], grade: ['الصف', 'grade'], section: ['الشعبة', 'الفصل', 'section'], email: ['البريد', 'البريد الإلكتروني', 'البريد المدرسي', 'email'] };
+  const HEADER_MAP = { school_id: ['الرقم الشخصي', 'الرقم المدرسي', 'رقم الطالب', 'school_id', 'id'], full_name: ['الاسم', 'اسم الطالب', 'الاسم الكامل', 'name', 'full_name'], grade: ['الصف', 'grade'], section: ['الشعبة', 'الفصل', 'section'], email: ['البريد', 'البريد الإلكتروني', 'البريد المدرسي', 'email'] };
   function printPins(pins) {
     const w = window.open('', '_blank');
-    w.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>الرموز الشخصية للتصويت</title><style>body{font-family:Tahoma,sans-serif;margin:14px}.g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.c{border:1.5px dashed #9c7a2b;border-radius:10px;padding:12px;page-break-inside:avoid;font-size:13px}.c b.p{display:block;font:700 22px monospace;letter-spacing:4px;direction:ltr;text-align:center;margin:8px 0;color:#052e23}.h{color:#9c7a2b;font-weight:700}</style></head><body><div class="g">${pins.map((p) => `<div class="c"><div class="h">قارئ المدرسة — رمز التصويت الشخصي</div>${esc(p.full_name)}<br>${esc(p.grade)} ${p.section ? '/ ' + esc(p.section) : ''}<br>الرقم المدرسي: <b>${esc(p.school_id)}</b><b class="p">${p.pin}</b><small>سرّي — لا تشاركه مع أحد. صوت واحد لكل طالب.</small></div>`).join('')}</div></body></html>`);
+    w.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>الرموز الشخصية للتصويت</title><style>body{font-family:Tahoma,sans-serif;margin:14px}.g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.c{border:1.5px dashed #9c7a2b;border-radius:10px;padding:12px;page-break-inside:avoid;font-size:13px}.c b.p{display:block;font:700 22px monospace;letter-spacing:4px;direction:ltr;text-align:center;margin:8px 0;color:#052e23}.h{color:#9c7a2b;font-weight:700}</style></head><body><div class="g">${pins.map((p) => `<div class="c"><div class="h">قارئ المدرسة — رمز التصويت الشخصي</div>${esc(p.full_name)}<br>${esc(p.grade)} ${p.section ? '/ ' + esc(p.section) : ''}<br>الرقم الشخصي: <b>${esc(p.school_id)}</b><b class="p">${p.pin}</b><small>سرّي — لا تشاركه مع أحد. صوت واحد لكل طالب.</small></div>`).join('')}</div></body></html>`);
     w.document.close(); w.focus(); w.print();
   }
   function showPins(pins) {
     const m = modal(`<div class="modal-body" style="padding-top:38px"><h3>الرموز الشخصية (${pins.length})</h3>
       ${alertBox('warn', 'تظهر هذه الرموز <b>مرة واحدة فقط</b> ولا تُخزَّن إلا مشفّرة. اطبعها أو نزّلها الآن، ثم وزّعها على الطلاب بشكل فردي.')}
       <div class="gap-row mt-2"><button class="btn btn-sm" data-pr>طباعة البطاقات</button><button class="btn btn-sm btn-outline" data-dl>تنزيل CSV</button></div>
-      <div class="table-wrap mt-2" style="max-height:320px;overflow:auto"><table class="t"><thead><tr><th>الرقم المدرسي</th><th>الاسم</th><th>الصف</th><th>الرمز</th></tr></thead><tbody>${pins.map((p) => `<tr><td class="num">${esc(p.school_id)}</td><td>${esc(p.full_name)}</td><td>${esc(p.grade)}</td><td class="num" dir="ltr"><b>${p.pin}</b></td></tr>`).join('')}</tbody></table></div></div>`);
+      <div class="table-wrap mt-2" style="max-height:320px;overflow:auto"><table class="t"><thead><tr><th>الرقم الشخصي</th><th>الاسم</th><th>الصف</th><th>الرمز</th></tr></thead><tbody>${pins.map((p) => `<tr><td class="num">${esc(p.school_id)}</td><td>${esc(p.full_name)}</td><td>${esc(p.grade)}</td><td class="num" dir="ltr"><b>${p.pin}</b></td></tr>`).join('')}</tbody></table></div></div>`);
     $('[data-pr]', m.el).onclick = () => printPins(pins);
-    $('[data-dl]', m.el).onclick = () => downloadText('voting-pins.csv', 'الرقم المدرسي,الاسم,الصف,الشعبة,الرمز الشخصي\r\n' + pins.map((p) => [p.school_id, p.full_name, p.grade, p.section, p.pin].map(csvCell).join(',')).join('\r\n'));
+    $('[data-dl]', m.el).onclick = () => downloadText('voting-pins.csv', 'الرقم الشخصي,الاسم,الصف,الشعبة,الرمز الشخصي\r\n' + pins.map((p) => [p.school_id, p.full_name, p.grade, p.section, p.pin].map(csvCell).join(',')).join('\r\n'));
   }
   VIEWS.students = async () => {
     const s = await getSettings();
     const r = await api('/api/admin/students?' + new URLSearchParams(stuFilter));
     const t = r.totals;
     main().innerHTML = head('الطلاب المؤهلون للتصويت', '<a class="btn btn-sm btn-outline" href="/api/admin/export/students.xlsx">تصدير Excel</a>') + `
-      ${alertBox('info', `لا يصوّت إلا الطلاب المدرجون هنا. ${s.voter_auth === 'oidc' ? 'طريقة التحقق الحالية: <b>حساب المدرسة</b> — تأكد من إدخال البريد المدرسي لكل طالب.' : 'طريقة التحقق الحالية: <b>الرقم المدرسي + رمز شخصي سري</b> تصدره من هنا وتوزّعه على الطلاب.'}`)}
+      ${alertBox('info', `لا يصوّت إلا الطلاب المدرجون هنا. ${s.voter_auth === 'oidc' ? 'طريقة التحقق الحالية: <b>حساب المدرسة</b> — تأكد من إدخال البريد المدرسي لكل طالب.' : 'طريقة التحقق الحالية: <b>الرقم الشخصي + رمز شخصي سري</b> تصدره من هنا وتوزّعه على الطلاب.'}`)}
       <div class="kpis mt-2">
         <div class="kpi"><b class="num">${fmtNum(t.active || 0)}</b><span>طالب مؤهل نشط</span></div>
         <div class="kpi" style="--kc:#137257"><b class="num">${fmtNum(t.with_pin || 0)}</b><span>صدر له رمز</span></div>
@@ -399,7 +399,7 @@
       </div>
       <div class="two">
         <div class="box"><h2>استيراد القائمة المعتمدة</h2>
-          <p class="muted small">ملف CSV (احفظ ملف Excel بصيغة «CSV UTF-8»). الأعمدة: <b>الرقم المدرسي، الاسم، الصف، الشعبة، البريد المدرسي</b> (البريد اختياري). يجب أن تطابق أسماء الصفوف الإعدادات.</p>
+          <p class="muted small">ملف CSV (احفظ ملف Excel بصيغة «CSV UTF-8»). الأعمدة: <b>الرقم الشخصي، الاسم، الصف، الشعبة، البريد المدرسي</b> (البريد اختياري). يجب أن تطابق أسماء الصفوف الإعدادات.</p>
           <div class="gap-row"><input type="file" id="csv" accept=".csv,text/csv,.txt" class="input" style="max-width:300px"><button class="btn btn-sm btn-outline" id="tpl">تنزيل نموذج</button></div>
           <label class="gap-row small mt-1"><input type="checkbox" id="deact"> تعطيل الطلاب غير الموجودين في الملف الجديد</label>
           <div id="imp-msg" class="mt-1"></div>
@@ -408,7 +408,7 @@
           <p class="muted small">يُخزَّن الرمز مشفّرًا ولا يمكن استرجاعه؛ إصدار رمز جديد يُلغي القديم فورًا. بعد 5 محاولات خاطئة يُقفل دخول الطالب 30 دقيقة.</p>
           <div class="gap-row"><button class="btn btn-sm" data-pins="missing">إصدار رموز لمن ليس لديه رمز</button><button class="btn btn-sm btn-outline" data-pins="selected">إصدار للمحددين</button><button class="btn btn-sm btn-outline" data-pins="all" style="color:var(--danger);border-color:var(--danger)">إعادة إصدار للجميع</button></div>
           <h2 class="mt-2" style="font-size:1.05rem">إضافة طالب يدويًا</h2>
-          <form id="addstu" class="gap-row"><input class="input" name="school_id" placeholder="الرقم المدرسي" style="max-width:140px" dir="ltr"><input class="input" name="full_name" placeholder="الاسم" style="max-width:200px">
+          <form id="addstu" class="gap-row"><input class="input" name="school_id" placeholder="الرقم الشخصي" style="max-width:140px" dir="ltr"><input class="input" name="full_name" placeholder="الاسم" style="max-width:200px">
             <select class="input" name="grade" style="max-width:160px">${s.grades.map((g) => `<option>${esc(g)}</option>`).join('')}</select><input class="input" name="section" placeholder="الشعبة" style="max-width:90px"><button class="btn btn-sm btn-emerald">إضافة</button></form>
         </div>
       </div>
@@ -416,21 +416,21 @@
         <div class="filters"><input class="input" id="sq" type="search" placeholder="بحث بالاسم أو الرقم أو البريد" value="${esc(stuFilter.q)}" style="flex:1">
           <select class="input" id="sg"><option value="">كل الصفوف</option>${s.grades.map((g) => `<option ${g === stuFilter.grade ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select>
           <select class="input" id="sf">${[['', 'الكل'], ['voted', 'صوّتوا'], ['not_voted', 'لم يصوّتوا'], ['no_pin', 'بلا رمز'], ['locked', 'مقفلون'], ['inactive', 'معطّلون']].map(([v, l]) => `<option value="${v}" ${stuFilter.filter === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
-        <div class="table-wrap" style="max-height:560px;overflow:auto"><table class="t"><thead><tr><th><input type="checkbox" id="sall"></th><th>الرقم المدرسي</th><th>الاسم</th><th>الصف</th><th>الفئة</th><th>البريد</th><th>رمز</th><th>صوّت</th><th>الحالة</th><th></th></tr></thead>
+        <div class="table-wrap" style="max-height:560px;overflow:auto"><table class="t"><thead><tr><th><input type="checkbox" id="sall"></th><th>الرقم الشخصي</th><th>الاسم</th><th>الصف</th><th>الفئة</th><th>البريد</th><th>رمز</th><th>صوّت</th><th>الحالة</th><th></th></tr></thead>
         <tbody>${r.items.map((x) => `<tr><td><input type="checkbox" data-sid="${x.id}"></td><td class="num">${esc(x.school_id)}</td><td>${esc(x.full_name)}</td><td>${esc(x.grade)} ${x.section ? '/ ' + esc(x.section) : ''}</td><td class="small">${esc(x.category)}</td>
           <td class="small" dir="ltr">${esc(x.email || '')}</td><td>${x.has_pin ? '✓' : '—'}</td><td>${x.voted ? '<span class="tag valid">نعم</span>' : '—'}</td>
           <td>${!x.active ? '<span class="tag void">معطّل</span>' : x.locked ? '<span class="tag flagged">مقفل</span>' : '<span class="tag valid">نشط</span>'}</td>
           <td class="gap-row">${x.locked ? `<button class="btn btn-sm btn-outline" data-unlock="${x.id}">فك القفل</button>` : ''}<button class="btn btn-sm btn-outline" data-toggle="${x.id}" data-active="${x.active}">${x.active ? 'تعطيل' : 'تفعيل'}</button>
           <button class="btn btn-sm btn-outline" data-email="${x.id}" data-cur="${esc(x.email || '')}">البريد</button></td></tr>`).join('') || '<tr><td colspan="10" class="center muted" style="padding:30px">لا يوجد طلاب. ابدأ باستيراد القائمة المعتمدة.</td></tr>'}</tbody></table></div>
         <p class="muted small">يعرض حتى 3000 طالب. «صوّت» توضح المشاركة فقط ولا تكشف لمن صوّت الطالب.</p></div>`;
-    $('#tpl').onclick = () => downloadText('students-template.csv', 'الرقم المدرسي,الاسم,الصف,الشعبة,البريد المدرسي\r\n20231001,أحمد محمد علي,' + s.grades[0] + ',أ,ahmed@school.edu\r\n');
+    $('#tpl').onclick = () => downloadText('students-template.csv', 'الرقم الشخصي,الاسم,الصف,الشعبة,البريد المدرسي\r\n20231001,أحمد محمد علي,' + s.grades[0] + ',أ,ahmed@school.edu\r\n');
     $('#csv').onchange = async (e) => {
       const f = e.target.files[0]; if (!f) return;
       const rows = parseCsv(await f.text());
       if (rows.length < 2) return ($('#imp-msg').innerHTML = alertBox('err', 'الملف فارغ.'));
       const hdr = rows[0].map((h) => h.trim().toLowerCase());
       const idx = {}; for (const [k, names] of Object.entries(HEADER_MAP)) idx[k] = hdr.findIndex((h) => names.map((n) => n.toLowerCase()).includes(h));
-      if (idx.school_id < 0 || idx.full_name < 0 || idx.grade < 0) return ($('#imp-msg').innerHTML = alertBox('err', 'لم أجد الأعمدة المطلوبة (الرقم المدرسي، الاسم، الصف) في السطر الأول.'));
+      if (idx.school_id < 0 || idx.full_name < 0 || idx.grade < 0) return ($('#imp-msg').innerHTML = alertBox('err', 'لم أجد الأعمدة المطلوبة (الرقم الشخصي، الاسم، الصف) في السطر الأول.'));
       const data = rows.slice(1).map((r) => Object.fromEntries(Object.entries(idx).map(([k, i]) => [k, i >= 0 ? (r[i] || '').trim() : ''])));
       if (!confirm(`استيراد ${data.length} طالب؟`)) return;
       try {
@@ -481,7 +481,7 @@
             <li>درجة التحكيم للمتسابق = <b>متوسط</b> درجات المحكّمين الذين <b>اعتمدوا</b> تقييمهم نهائيًا. المسودات لا تُحتسب.</li>
             <li>التكليف: <b>${j.assignment === 'manual' ? 'يدوي — كل محكّم يقيّم المكلَّف بهم فقط' : 'كل محكّم يقيّم جميع التلاوات المعتمدة'}</b>.</li>
             <li>الاكتمال: ${j.completion === 'minimum' ? `يكفي <b>${j.min_required}</b> تقييم معتمد على الأقل لكل متسابق` : 'يجب أن يعتمد <b>جميع المحكّمين المكلّفين</b> تقييماتهم'}. لا تُعتمد النتائج ما لم يكتمل التحكيم لكل متسابق.</li>
-            <li>لا يرى المحكّم تقييمات زملائه قبل اعتماد تقييمه، ولا يرى الرقم المدرسي أو الاسم الكامل.</li>
+            <li>لا يرى المحكّم تقييمات زملائه قبل اعتماد تقييمه، ولا يرى الرقم الشخصي أو الاسم الكامل.</li>
           </ul></div>
       </div>
       <div class="box"><h2>المحكّمون (${j.judges.length})</h2>
@@ -686,7 +686,7 @@
 
       <div class="box"><h2>التصويت والتحقق من الهوية</h2>
         <div class="settings-grid">
-          <div class="field"><label>طريقة التحقق من المصوّت</label>${sel('voter_auth', [['pin', 'الرقم المدرسي + رمز شخصي سري'], ['oidc', 'حساب المدرسة (Google / Microsoft)']])}<div class="hint">حساب المدرسة يتطلب ضبط متغيرات OIDC على الخادم (انظر الدليل).</div></div>
+          <div class="field"><label>طريقة التحقق من المصوّت</label>${sel('voter_auth', [['pin', 'الرقم الشخصي + رمز شخصي سري'], ['oidc', 'حساب المدرسة (Google / Microsoft)']])}<div class="hint">حساب المدرسة يتطلب ضبط متغيرات OIDC على الخادم (انظر الدليل).</div></div>
           ${sw('prevent_self_vote', 'منع الطالب من التصويت لنفسه')}
           ${sw('allow_vote_change', 'السماح بتعديل الصوت قبل إغلاق التصويت')}
           ${sw('vote_restrict_to_category', 'يصوّت الطالب لمتسابقي فئته فقط')}

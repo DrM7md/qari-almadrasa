@@ -53,8 +53,8 @@ function register(router) {
         const grade = clean(r.grade, 60);
         const section = clean(r.section, 20);
         const email = clean(r.email, 120).toLowerCase() || null;
-        if (!/^[A-Z0-9\-]{3,20}$/.test(sid)) return errors.push(`السطر ${line}: رقم مدرسي غير صالح «${sid}».`);
-        if (seen.has(sid)) return errors.push(`السطر ${line}: الرقم المدرسي ${sid} مكرر في الملف.`);
+        if (!/^[A-Z0-9\-]{3,20}$/.test(sid)) return errors.push(`السطر ${line}: رقم شخصي غير صالح «${sid}».`);
+        if (seen.has(sid)) return errors.push(`السطر ${line}: الرقم الشخصي ${sid} مكرر في الملف.`);
         seen.add(sid);
         if (name.length < 3) return errors.push(`السطر ${line}: الاسم مطلوب.`);
         if (!grades.has(grade)) return errors.push(`السطر ${line}: الصف «${grade}» غير موجود في إعدادات الصفوف.`);
@@ -78,11 +78,11 @@ function register(router) {
     const b = await readJson(req, 4096);
     const s = getAllSettings();
     const sid = normId(b.school_id), name = clean(b.full_name, 90);
-    if (!/^[A-Z0-9\-]{3,20}$/.test(sid) || name.length < 3 || !s.grades.includes(b.grade)) throw new HttpError(422, 'تحقق من الرقم المدرسي والاسم والصف.');
+    if (!/^[A-Z0-9\-]{3,20}$/.test(sid) || name.length < 3 || !s.grades.includes(b.grade)) throw new HttpError(422, 'تحقق من الرقم الشخصي والاسم والصف.');
     try {
       db.prepare('INSERT INTO students(season, school_id, full_name, grade, section, email, created_at, updated_at) VALUES(?,?,?,?,?,?,?,?)')
         .run(s.season, sid, name, b.grade, clean(b.section, 20), clean(b.email, 120).toLowerCase() || null, now(), now());
-    } catch (e) { throw new HttpError(409, /email/.test(e.message) ? 'البريد مستخدم.' : 'الرقم المدرسي موجود مسبقًا.'); }
+    } catch (e) { throw new HttpError(409, /email/.test(e.message) ? 'البريد مستخدم.' : 'الرقم الشخصي موجود مسبقًا.'); }
     audit(admin.admin_id, 'student_add', sid);
     sendJson(res, 201, { ok: true });
   }));
@@ -197,7 +197,7 @@ function register(router) {
       ? db.prepare("SELECT c.* FROM contestants c JOIN judge_assignments a ON a.contestant_id = c.id WHERE a.judge_id = ? AND c.season = ? AND c.status = 'approved' ORDER BY c.entry_no").all(admin.admin_id, s.season)
       : db.prepare("SELECT * FROM contestants WHERE season = ? AND status = 'approved' ORDER BY entry_no").all(s.season);
     const mine = new Map(db.prepare('SELECT * FROM evaluations WHERE judge_id = ? AND season = ?').all(admin.admin_id, s.season).map((e) => [e.contestant_id, e]));
-    // للمحكّم: الاسم المعتمد فقط، دون الرقم المدرسي أو الاسم الكامل (تحكيم محايد)
+    // للمحكّم: الاسم المعتمد فقط، دون الرقم الشخصي أو الاسم الكامل (تحكيم محايد)
     sendJson(res, 200, {
       criteria: s.judging_criteria,
       items: rows.map((c) => { const e = mine.get(c.id); return { id: c.id, entry_no: c.entry_no, display_name: c.display_name, grade: c.grade, category: categoryOf(c.grade, s).name, title: c.title, duration: c.video_duration, status: e ? e.status : 'none', pct: e && e.max_total ? Math.round((e.total / e.max_total) * 10000) / 100 : null }; }),

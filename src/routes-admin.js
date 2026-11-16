@@ -259,10 +259,10 @@ function register(router) {
     if (b.section !== undefined) { if (!s.sections.includes(b.section)) throw new HttpError(422, 'شعبة غير صالحة.'); upd.section = b.section; }
     if (b.featured !== undefined) upd.featured = b.featured ? 1 : 0;
     if (b.school_id !== undefined) {
-      if (ROLE_RANK[admin.role] < 2) throw new HttpError(403, 'تعديل الرقم المدرسي متاح للمدير فقط.');
+      if (ROLE_RANK[admin.role] < 2) throw new HttpError(403, 'تعديل الرقم الشخصي متاح للمدير فقط.');
       const v = clean(b.school_id, 20).toUpperCase();
-      if (!/^[A-Z0-9\-]{3,20}$/.test(v)) throw new HttpError(422, 'رقم مدرسي غير صالح.');
-      if (db.prepare('SELECT id FROM contestants WHERE season = ? AND school_id = ? AND id != ?').get(c.season, v, c.id)) throw new HttpError(409, 'الرقم المدرسي مستخدم في مشاركة أخرى.');
+      if (!/^[A-Z0-9\-]{3,20}$/.test(v)) throw new HttpError(422, 'رقم شخصي غير صالح.');
+      if (db.prepare('SELECT id FROM contestants WHERE season = ? AND school_id = ? AND id != ?').get(c.season, v, c.id)) throw new HttpError(409, 'الرقم الشخصي مستخدم في مشاركة أخرى.');
       upd.school_id = v;
     }
     const keys = Object.keys(upd);
@@ -544,7 +544,7 @@ function register(router) {
     const rows = db.prepare('SELECT * FROM contestants WHERE season = ? ORDER BY entry_no').all(s.season);
     return {
       s, count: rows.length,
-      header: ['رقم المشاركة', 'الاسم الكامل', 'الاسم المعتمد للنشر', 'الرقم المدرسي', 'الصف', 'الشعبة', 'الفئة', 'عنوان التلاوة', 'الحالة', 'سبب الرفض/الاستبعاد', 'موافقة ولي الأمر', 'المدة (ث)', 'المشاهدات', 'الأصوات الصحيحة', 'تاريخ التسجيل'],
+      header: ['رقم المشاركة', 'الاسم الكامل', 'الاسم المعتمد للنشر', 'الرقم الشخصي', 'الصف', 'الشعبة', 'الفئة', 'عنوان التلاوة', 'الحالة', 'سبب الرفض/الاستبعاد', 'موافقة ولي الأمر', 'المدة (ث)', 'المشاهدات', 'الأصوات الصحيحة', 'تاريخ التسجيل'],
       rows: rows.map((c) => [c.entry_no, c.full_name, c.display_name, c.school_id, c.grade, c.section, categoryOf(c.grade, s).name, c.title, STATUS_AR[c.status], c.disqualify_reason || c.reject_reason || '', c.guardian_consent ? 'نعم' : 'لا',
         c.video_duration ? Math.round(c.video_duration) : '', c.views, (vc[c.id] && vc[c.id].valid) || 0, c.created_at.slice(0, 16).replace('T', ' ')]),
     };
@@ -582,7 +582,7 @@ function register(router) {
     const s = getAllSettings();
     const rows = db.prepare(`SELECT st.*, EXISTS(SELECT 1 FROM votes v WHERE v.student_id = st.id AND v.status = 'valid') voted FROM students st WHERE st.season = ? ORDER BY st.grade, st.section, st.full_name`).all(s.season);
     audit(admin.admin_id, 'export_students', rows.length);
-    sendXlsx(res, `students-${s.season}.xlsx`, [{ name: 'الطلاب المؤهلون', header: ['الرقم المدرسي', 'الاسم', 'الصف', 'الشعبة', 'البريد المدرسي', 'رمز شخصي مُصدَر', 'صوّت', 'نشط'],
+    sendXlsx(res, `students-${s.season}.xlsx`, [{ name: 'الطلاب المؤهلون', header: ['الرقم الشخصي', 'الاسم', 'الصف', 'الشعبة', 'البريد المدرسي', 'رمز شخصي مُصدَر', 'صوّت', 'نشط'],
       rows: rows.map((r) => [r.school_id, r.full_name, r.grade, r.section, r.email || '', r.pin_hash ? 'نعم' : 'لا', r.voted ? 'نعم' : 'لا', r.active ? 'نعم' : 'لا']) }]);
   }));
 }

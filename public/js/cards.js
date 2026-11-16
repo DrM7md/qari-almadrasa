@@ -115,7 +115,7 @@
       const m = modal(`<form class="modal-body" style="padding-top:38px" novalidate>
         <h3>التحقق من هويتك</h3>
         <p class="muted" style="margin-top:4px">التصويت لطلاب المدرسة المسجلين فقط، ولكل طالب صوت واحد. أدخل رقمك المدرسي والرمز الشخصي الذي استلمته من المدرسة.</p>
-        <div class="field"><label for="v-sid">الرقم المدرسي</label><input id="v-sid" class="input" inputmode="numeric" dir="ltr" style="text-align:right" autocomplete="username" maxlength="20"></div>
+        <div class="field"><label for="v-sid">الرقم الشخصي</label><input id="v-sid" class="input" inputmode="numeric" dir="ltr" style="text-align:right" autocomplete="username" maxlength="20"></div>
         <div class="field mt-1"><label for="v-pin">الرمز الشخصي</label><input id="v-pin" class="input" dir="ltr" autocomplete="one-time-code" placeholder="XXX-XXX" maxlength="9" style="text-align:right;letter-spacing:.15em;text-transform:uppercase"></div>
         <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div data-msg class="mt-1"></div>
