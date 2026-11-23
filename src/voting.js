@@ -90,21 +90,23 @@ function register(router) {
     const b = await readJson(req, 2048);
     const s = getAllSettings();
     if (b.website) { logAttempt(req, 'bot'); throw new HttpError(400, 'طلب غير صالح.'); }
-    if (s.voter_auth !== 'pin') throw new HttpError(400, 'طريقة الدخول هذه غير مفعّلة.');
+    const idOnly = s.voter_auth === 'id';
+    if (s.voter_auth !== 'pin' && !idOnly) throw new HttpError(400, 'طريقة الدخول هذه غير مفعّلة.');
     const sid = normId(b.school_id);
-    const generic = 'الرقم الشخصي أو الرمز الشخصي غير صحيح.';
-    if (!sid || !normPin(b.pin)) throw new HttpError(422, 'أدخل الرقم الشخصي والرمز الشخصي.');
+    const generic = idOnly ? 'الرقم الشخصي غير موجود في قائمة الطلاب المؤهلين للتصويت.' : 'الرقم الشخصي أو الرمز الشخصي غير صحيح.';
+    if (!sid) throw new HttpError(422, 'أدخل الرقم الشخصي.');
+    if (!idOnly && !normPin(b.pin)) throw new HttpError(422, 'أدخل الرقم الشخصي والرمز الشخصي.');
     const st = db.prepare('SELECT * FROM students WHERE season = ? AND school_id = ?').get(s.season, sid);
     if (!st || !st.active) { logAttempt(req, 'unknown_student', { entered_id: sid }); throw new HttpError(401, generic); }
     if (st.locked_until && st.locked_until > now()) { logAttempt(req, 'locked', { student_id: st.id }); throw new HttpError(423, `تم إيقاف الدخول مؤقتًا بسبب محاولات خاطئة متكررة. حاول بعد ${LOCK_MIN} دقيقة أو راجع لجنة المسابقة.`); }
-    if (!st.pin_hash || !sec.safeEqual(st.pin_hash, pinHash(b.pin, st.id))) {
+    if (!idOnly && (!st.pin_hash || !sec.safeEqual(st.pin_hash, pinHash(b.pin, st.id)))) {
       const f = st.failed + 1;
       db.prepare('UPDATE students SET failed = ?, locked_until = ? WHERE id = ?').run(f >= MAX_FAILS ? 0 : f, f >= MAX_FAILS ? new Date(Date.now() + LOCK_MIN * 60000).toISOString() : null, st.id);
       logAttempt(req, f >= MAX_FAILS ? 'locked' : 'bad_pin', { student_id: st.id });
       throw new HttpError(401, generic);
     }
     db.prepare('UPDATE students SET failed = 0, locked_until = NULL WHERE id = ?').run(st.id);
-    createSession(res, st.id, 'pin');
+    createSession(res, st.id, idOnly ? 'id' : 'pin');
     sendJson(res, 200, { ok: true, first_name: firstName(st.full_name) });
   });
 

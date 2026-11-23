@@ -297,7 +297,7 @@
           <div class="field"><label>نهاية التصويت (يُغلق تلقائيًا)</label><input class="input" type="datetime-local" name="voting_end" value="${toLocalInput(s.voting_end)}"></div>
           <div style="align-self:end"><button class="btn btn-sm btn-emerald" type="submit">حفظ المواعيد</button></div>
         </form>
-        <p class="muted small">التحقق: ${s.voter_auth === 'oidc' ? 'حساب المدرسة (Google/Microsoft)' : 'الرقم الشخصي + رمز شخصي'} · ${s.prevent_self_vote ? 'التصويت للنفس ممنوع' : 'التصويت للنفس مسموح'} · ${s.allow_vote_change ? 'تعديل الصوت مسموح' : 'لا تعديل بعد الاعتماد'} · النتائج للجمهور: ${s.show_results ? 'معلنة' : 'مخفية'} — <a href="#settings">تعديل الإعدادات</a></p>
+        <p class="muted small">التحقق: ${s.voter_auth === 'oidc' ? 'حساب المدرسة (Google/Microsoft)' : s.voter_auth === 'id' ? 'الرقم الشخصي فقط' : 'الرقم الشخصي + رمز شخصي'} · ${s.prevent_self_vote ? 'التصويت للنفس ممنوع' : 'التصويت للنفس مسموح'} · ${s.allow_vote_change ? 'تعديل الصوت مسموح' : 'لا تعديل بعد الاعتماد'} · النتائج للجمهور: ${s.show_results ? 'معلنة' : 'مخفية'} — <a href="#settings">تعديل الإعدادات</a></p>
       </div>
       <div class="kpis mt-2" id="live">
         <div class="kpi"><b class="num" data-live="valid">${fmtNum(d.votes.valid)}</b><span>صوت صحيح</span></div>
@@ -686,7 +686,7 @@
 
       <div class="box"><h2>التصويت والتحقق من الهوية</h2>
         <div class="settings-grid">
-          <div class="field"><label>طريقة التحقق من المصوّت</label>${sel('voter_auth', [['pin', 'الرقم الشخصي + رمز شخصي سري'], ['oidc', 'حساب المدرسة (Google / Microsoft)']])}<div class="hint">حساب المدرسة يتطلب ضبط متغيرات OIDC على الخادم (انظر الدليل).</div></div>
+          <div class="field"><label>طريقة التحقق من المصوّت</label>${sel('voter_auth', [['id', 'الرقم الشخصي فقط'], ['pin', 'الرقم الشخصي + رمز شخصي سري'], ['oidc', 'حساب المدرسة (Google / Microsoft)']])}<div class="hint">حساب المدرسة يتطلب ضبط متغيرات OIDC على الخادم (انظر الدليل).</div></div>
           ${sw('prevent_self_vote', 'منع الطالب من التصويت لنفسه')}
           ${sw('allow_vote_change', 'السماح بتعديل الصوت قبل إغلاق التصويت')}
           ${sw('vote_restrict_to_category', 'يصوّت الطالب لمتسابقي فئته فقط')}

@@ -112,15 +112,16 @@
         </div>`, { size: 'sm', onClose: () => !done && resolve(false) });
         return m;
       }
+      const idOnly = me.auth === 'id';
       const m = modal(`<form class="modal-body" style="padding-top:38px" novalidate>
         <h3>التحقق من هويتك</h3>
-        <p class="muted" style="margin-top:4px">التصويت لطلاب المدرسة المسجلين فقط، ولكل طالب صوت واحد. أدخل رقمك المدرسي والرمز الشخصي الذي استلمته من المدرسة.</p>
+        <p class="muted" style="margin-top:4px">التصويت لطلاب المدرسة المسجلين فقط، ولكل طالب صوت واحد. ${idOnly ? 'أدخل رقمك الشخصي للمتابعة.' : 'أدخل رقمك الشخصي والرمز الشخصي الذي استلمته من المدرسة.'}</p>
         <div class="field"><label for="v-sid">الرقم الشخصي</label><input id="v-sid" class="input" inputmode="numeric" dir="ltr" style="text-align:right" autocomplete="username" maxlength="20"></div>
-        <div class="field mt-1"><label for="v-pin">الرمز الشخصي</label><input id="v-pin" class="input" dir="ltr" autocomplete="one-time-code" placeholder="XXX-XXX" maxlength="9" style="text-align:right;letter-spacing:.15em;text-transform:uppercase"></div>
+        ${idOnly ? '' : `<div class="field mt-1"><label for="v-pin">الرمز الشخصي</label><input id="v-pin" class="input" dir="ltr" autocomplete="one-time-code" placeholder="XXX-XXX" maxlength="9" style="text-align:right;letter-spacing:.15em;text-transform:uppercase"></div>`}
         <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div data-msg class="mt-1"></div>
         <button class="btn btn-block mt-2" type="submit">تحقّق ومتابعة</button>
-        <p class="muted small" style="font-size:.85rem;margin-bottom:0">لم تستلم رمزًا؟ راجع لجنة المسابقة في المدرسة.</p>
+        ${idOnly ? '' : '<p class="muted small" style="font-size:.85rem;margin-bottom:0">لم تستلم رمزًا؟ راجع لجنة المسابقة في المدرسة.</p>'}
       </form>`, { size: 'sm', onClose: () => !done && resolve(false) });
       const f = m.el.querySelector('form');
       setTimeout(() => m.el.querySelector('#v-sid').focus(), 120);
@@ -129,7 +130,7 @@
         const btn = f.querySelector('button[type=submit]');
         setBusy(btn, true, 'جارٍ التحقق…');
         try {
-          await api('/api/vote/login', { method: 'POST', body: { school_id: toAscii(f.querySelector('#v-sid').value.trim()), pin: f.querySelector('#v-pin').value.trim(), website: f.website.value } });
+          await api('/api/vote/login', { method: 'POST', body: { school_id: toAscii(f.querySelector('#v-sid').value.trim()), pin: idOnly ? '' : f.querySelector('#v-pin').value.trim(), website: f.website.value } });
           await refreshMe();
           done = true; m.close(); resolve(true);
         } catch (err) { setBusy(btn, false); f.querySelector('[data-msg]').innerHTML = alertBox('err', esc(err.message)); }

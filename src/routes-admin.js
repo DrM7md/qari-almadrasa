@@ -99,7 +99,7 @@ const SETTING_RULES = {
   allow_replace: Boolean, allow_resubmit_rejected: Boolean, require_guardian_consent: Boolean,
   show_class_publicly: Boolean, show_vote_counts: Boolean, show_views: Boolean, show_results: Boolean,
   prevent_self_vote: Boolean, allow_vote_change: Boolean, vote_restrict_to_category: Boolean, judging_enabled: Boolean,
-  voter_auth: (v) => (v === 'oidc' ? 'oidc' : 'pin'),
+  voter_auth: (v) => (['oidc', 'id'].includes(v) ? v : 'pin'),
   competition_name: (v) => clean(v, 100),
   public_results_detail: (v) => (['winners', 'winners_scores', 'full'].includes(v) ? v : 'winners'),
   certificates_enabled: Boolean,
