@@ -454,3 +454,7 @@ textarea.input { min-height: 110px; resize: vertical; line-height: 1.7; }
 .res-table { width: 100%; border-collapse: collapse; background: #fffdf8; border-radius: 14px; overflow: hidden; border: 1px solid var(--ivory-3); }
 .res-table th, .res-table td { padding: 10px 12px; text-align: start; border-bottom: 1px solid var(--ivory-2); font-size: .94rem; }
 .res-table th { background: var(--ivory-2); color: var(--em-900); }
+
+/* جهة الإعداد في الواجهة */
+.hero .credit { color: var(--gold-hi); font-weight: 700; font-size: 1.05rem; line-height: 1.9; margin: 14px auto 6px; padding: 8px 22px; border: 1px solid rgba(201, 164, 76, .45); border-radius: 999px; display: inline-block; background: rgba(201, 164, 76, .08); }
+@media (max-width: 600px) { .hero .credit { font-size: .92rem; border-radius: 18px; padding: 8px 16px; } }
